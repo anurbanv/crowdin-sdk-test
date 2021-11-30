@@ -1,0 +1,72 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
+
+ext {
+    libraryVersionCode = 6
+    libraryVersionName = "1.0.5"
+
+    publishedGroupId = 'com.crowdin.platform'
+    libraryName = 'CrowdinControlsSdk'
+    artifact = 'controls'
+
+    libraryDescription = "Crowdin SDK Controls - UI widget for easy access to the main features of the Crowdin SDK."
+
+    siteUrl = 'https://crowdin.com/'
+    gitUrl = 'https://github.com/crowdin/mobile-sdk-android'
+
+    libraryVersion = libraryVersionName
+
+    developerId = 'mykhailo-nester'
+    developerName = 'Mykhailo Nester'
+    developerEmail = 'nsmisha.dev@gmail.com'
+
+    licenseName = 'The MIT License'
+    licenseUrl = 'https://opensource.org/licenses/MIT'
+    allLicenses = ["MIT"]
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode libraryVersionCode
+        versionName libraryVersionName
+        multiDexEnabled true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            consumerProguardFiles 'consumer-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+dependencies {
+    implementation 'com.github.crowdin.mobile-sdk-android:sdk:1.4.5'
+
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation "androidx.constraintlayout:constraintlayout:2.1.0"
+    implementation "androidx.multidex:multidex:2.0.1"
+}
+
+apply from: 'install.gradle'
+apply from: 'maven.gradle'

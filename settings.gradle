@@ -1,0 +1,3 @@
+include ':example-info'
+include ':crowdin-controls', ':crowdin'
+include ':example', ':crowdin'

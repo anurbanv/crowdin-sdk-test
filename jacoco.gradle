@@ -1,0 +1,64 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+/**
+ * The correct path of the report is $rootProjectDir/app/build/reports/jacoco/index.html
+ * to run this task use: ./gradlew clean jacocoTestReport
+ */
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
+    group = "reporting"
+    description = "Generate Jacoco code coverage report"
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+        csv.enabled = true
+    }
+
+    def fileFilter = [
+            '**/R.class',
+            '**/R$*.class',
+            '**/BuildConfig.*',
+            '**/Manifest*.*',
+            '**/*Test*.*',
+            'android/**/*.*',
+            '**/auth**',
+            '**/*CrowdinContextWrapper*.*',
+            '**/*CrowdinLayoutInflater*.*',
+            '**/*CrowdinResources*.*',
+            '**/*Attributes*.*',
+            '**/*ThreadUtils*.*',
+            '**/*Extensions*.*',
+            '**/*ScreenshotService*.*',
+            '**/*Connectivity*.*',
+            '**/*NetworkType*.*',
+            '**/api**',
+            '**/*XmlParserUtils*.*',
+            '**/*BaseNavigationViewTransformer*.*',
+            '**/*BaseToolbarTransformer*.*',
+            '**/*BaseTransformer*.*',
+            '**/*BottomNavigationViewTransformer*.*',
+            '**/*NavigationViewTransformer*.*',
+            '**/*SpinnerTransformer*.*',
+            '**/*SupportToolbarTransformer*.*',
+            '**/*TextViewTransformer*.*',
+            '**/*ToolbarTransformer*.*',
+            '**/*ScreenshotUtils*.*',
+            '**/*ResourcesData*.*',
+            '**/*UiUtil*.*'
+    ]
+
+    def javaDebugTree = fileTree(dir: "${buildDir}/intermediates/javac/debug", excludes: fileFilter)
+    def kotlinDebugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories.from = files([mainSrc])
+    classDirectories.from = files([javaDebugTree, kotlinDebugTree])
+    executionData.from = fileTree(dir: "$buildDir", includes: [
+            "jacoco/testDebugUnitTest.exec",
+            "outputs/code-coverage/connected/*coverage.ec"
+    ])
+}

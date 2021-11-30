@@ -1,0 +1,123 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.30"
+    }
+}
+
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
+
+apply from: '../jacoco.gradle'
+
+ext {
+    libraryVersionCode = 24
+    libraryVersionName = "1.4.8"
+
+    publishedGroupId = 'com.crowdin.platform'
+    libraryName = 'CrowdinAndroidSdk'
+    artifact = 'sdk'
+
+    libraryDescription = "Crowdin Android SDK delivers all new translations from Crowdin project to the application immediately. So there is no need to update this application via Google Play Store to get the new version with the localization."
+
+    siteUrl = 'https://crowdin.com/'
+    gitUrl = 'https://github.com/crowdin/mobile-sdk-android'
+
+    libraryVersion = libraryVersionName
+
+    developerId = 'mykhailo-nester'
+    developerName = 'Mykhailo Nester'
+    developerEmail = 'nsmisha.dev@gmail.com'
+
+    licenseName = 'The MIT License'
+    licenseUrl = 'https://opensource.org/licenses/MIT'
+    allLicenses = ["MIT"]
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode libraryVersionCode
+        versionName libraryVersionName
+        multiDexEnabled true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            testCoverageEnabled = true
+        }
+
+        release {
+            minifyEnabled false
+            consumerProguardFiles 'consumer-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+dependencies {
+    implementation "androidx.appcompat:appcompat:1.3.1"
+    implementation "androidx.work:work-runtime-ktx:2.5.0"
+    implementation "com.google.android.material:material:1.4.0"
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
+    implementation "com.google.code.gson:gson:2.8.6"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.1"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.30"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.0"
+    implementation 'com.karumi:dexter:6.2.2'
+    implementation "androidx.multidex:multidex:2.0.1"
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:3.12.4'
+}
+
+// KtLint configuration
+configurations {
+    ktlint
+}
+
+dependencies {
+    ktlint "com.pinterest:ktlint:0.35.0"
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "src/**/*.kt"
+}
+check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "-F", "src/**/*.kt"
+}
+
+apply from: 'install.gradle'
+apply from: 'maven.gradle'
